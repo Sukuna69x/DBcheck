@@ -9,9 +9,9 @@ from pyrogram.types import Message
 
 bot = Client(
     session_name=":memory:",
-    api_id=int(os.environ["API_ID"]),
-    api_hash=os.environ["API_HASH"],
-    bot_token=os.environ["BOT_TOKEN"]
+    api_id=int(os.environ["21406615"]),
+    api_hash=os.environ["d66b1900ea3a7438ee22dd389085949a"],
+    bot_token=os.environ["7895883671:AAFSp7wa7-fMdoXzP38Hz8O724Pr3g191CE"]
 )
 
 
