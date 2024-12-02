@@ -6,19 +6,23 @@ import urllib
 from pyrogram import Client, filters
 from pyrogram.types import Message
 
+# Get environment variables
+api_id = os.getenv("API_ID", "21406615")
+api_hash = os.getenv("API_HASH", "d66b1900ea3a7438ee22dd389085949a")
+bot_token = os.getenv("BOT_TOKEN", "7849431555:AAHeOZvMvmssK5tTu6TfYdpxWH9kIyE4ebU")
 
 bot = Client(
     session_name=":memory:",
-    api_id=int(os.environ["API_ID", "21406615"]),
-    api_hash=os.environ["API_HASH", "d66b1900ea3a7438ee22dd389085949a"],
-    bot_token=os.environ["BOT_TOKEN", "7849431555:AAHeOZvMvmssK5tTu6TfYdpxWH9kIyE4ebU"]
+    api_id=int(api_id),
+    api_hash=api_hash,
+    bot_token=bot_token
 )
 
 
 @bot.on_message(filters.command("start"))
 async def _start(_, msg: Message):
     START = """
-**Hii {}**, `I am MongoDB Url Checker Bot, Just Send me your MongoDB Url I will tell your Url having any issues to connect or not.`
+**Hii {}**, `I am MongoDB Url Checker Bot, Just Send me your MongoDB Url I will tell you if your Url has any issues connecting or not.`
 
 __Made with ❤ by [Krishna](https://t.me/Krishna_Singhal)__.
 """
@@ -41,8 +45,8 @@ async def _check(_, msg: Message):
     await check_url(msg, url)
     try:
         await msg.delete()  # Will work also in group so Pass chat admin Exception.
-    except:
-        await msg.reply("`I can't delete this Url Myself, Any admin delete this for Security.")
+    except Exception as e:
+        await msg.reply(f"`I can't delete this URL myself, any admin delete this for security.` Error: {str(e)}")
 
 
 async def check_url(msg: Message, url: str):
@@ -64,21 +68,22 @@ async def check_url(msg: Message, url: str):
                 username = urllib.parse.quote_plus(username)
             if s_r.search(password):
                 password = urllib.parse.quote_plus(password)
-            if '<' or '>' in dbname:
+            if '<' in dbname or '>' in dbname:
                 dbname = "Userge"
             new_url = raw_url.format(username, password, key, dbname)
             await msg.reply(
-                "`Your URL having Invalid Username and Password.`\n\n"
-                "`I quoted your Username and Password and created new DB_URI, "
+                "`Your URL has an invalid username and password.`\n\n"
+                "`I quoted your username and password and created a new DB_URI, "
                 f"Use this to connect to MongoDB.`\n\n`{new_url}`"
             )
     else:
-        if ('<' or '>') in match.group(5):
+        if '<' in match.group(5) or '>' in match.group(5):
             dbname = "Userge"
             new_url = url.replace(match.group(5), dbname)
-            return await msg.reply(f"`you forgot to remove '<' and '>' signs.`\n\n**Use this URL:** `{new_url}`")
-        await msg.reply("`This URL is ERROR Free. you can use this to connect to MongoDb.`")
+            return await msg.reply(f"`You forgot to remove '<' and '>' signs.`\n\n**Use this URL:** `{new_url}`")
+        await msg.reply("`This URL is ERROR Free. You can use this to connect to MongoDB.`")
 
 
 if __name__ == "__main__":
     bot.run()
+            
